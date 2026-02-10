@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YTLink AV Downloader</title>
+</head>
+<body>
+  <h2>YouTube Downloader</h2>
+
+  <input id="url" placeholder="Paste YouTube link" size="60" />
+  <br><br>
+
+  <button onclick="downloadAudio()">Download Audio</button>
+  <button onclick="downloadVideo()">Download Video</button>
+
+  <pre id="result"></pre>
+
+  <script>
+    async function downloadAudio() {
+      const url = document.getElementById("url").value;
+      const res = await fetch("/download/audio", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ url })
+      });
+      document.getElementById("result").innerText = await res.text();
+    }
+
+    async function downloadVideo() {
+      const url = document.getElementById("url").value;
+      const res = await fetch("/download/video", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ url, resolution: "720" })
+      });
+      document.getElementById("result").innerText = await res.text();
+    }
+  </script>
+</body>
+</html>
