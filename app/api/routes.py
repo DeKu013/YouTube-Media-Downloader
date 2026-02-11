@@ -1,15 +1,25 @@
-from fastapi import APIRouter
+import uuid
+from fastapi import APIRouter, BackgroundTasks
 from app.models.schemas import DownloadRequest
 from app.services.downloader import download_audio, download_video
+from app.services.progress import create_task, get_task
 
 router = APIRouter()
 
 @router.post("/download/audio")
-def download_audio_route(req: DownloadRequest):
-    download_audio(req.url, req.quality)
-    return {"status": "audio downloaded"}
+def download_audio_route(req: DownloadRequest, bg: BackgroundTasks):
+    task_id = str(uuid.uuid4())
+    create_task(task_id)
+    bg.add_task(download_audio, req.url, req.quality, task_id)
+    return {"task_id": task_id}
 
 @router.post("/download/video")
-def download_video_route(req: DownloadRequest):
-    download_video(req.url, req.resolution)
-    return {"status": "video downloaded"}
+def download_video_route(req: DownloadRequest, bg: BackgroundTasks):
+    task_id = str(uuid.uuid4())
+    create_task(task_id)
+    bg.add_task(download_video, task_id, req.url, req.quality)
+    return {"task_id": task_id}
+
+@router.get("/status/{task_id}")
+def get_status(task_id: str):
+    return get_task(task_id)
