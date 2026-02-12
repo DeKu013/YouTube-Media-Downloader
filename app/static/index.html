@@ -28,12 +28,18 @@
   </div>
 </div>
 
+<br><br>
+<button onclick="openDownloads()">
+  Open Downloads Folder
+</button>
+
+
 
 
   <pre id="result"></pre>
 
   <script>
-async function downloadAudio() {
+  async function downloadAudio() {
   const url = document.getElementById("url").value;
 
   if (!url) {
@@ -190,6 +196,15 @@ function resetUI() {
   percentText.innerText = "0%";
   speedText.innerText = "Speed: --";
   etaText.innerText = "ETA: --";
+}
+</script>
+<script>
+async function openDownloads() {
+  try {
+    await fetch("/downloads");
+  } catch (error) {
+    alert("Failed to open folder");
+  }
 }
 </script>
 </body>

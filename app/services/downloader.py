@@ -106,6 +106,11 @@ def download_video(task_id: str, url: str, resolution: str = "best"):
         #    }
         #},
         #"allow_unplayable_formats": True,
+        "retries": 10,
+        "fragment_retries": 10,
+        "socket_timeout": 30,
+        "continuedl": True,
+        "concurrent_fragment_downloads": 1,
     }
 
 
