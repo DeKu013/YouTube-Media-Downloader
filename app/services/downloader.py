@@ -57,7 +57,9 @@ def download_video(task_id: str, url: str, resolution: str = "best"):
     if resolution == "best":
         format_selector = "bestvideo+bestaudio/best"
     else:
-        format_selector = f"bv*[height<={resolution}]+bestaudio/best"
+        format_selector = f"bestvideo[height<={resolution}]+bestaudio/best"
+
+
     
     def progress_hook(d):
         if d['status'] == 'downloading':
@@ -79,20 +81,31 @@ def download_video(task_id: str, url: str, resolution: str = "best"):
             complete_task(task_id)
     
     ydl_opts = {
-        "format": format_selector,
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
         "merge_output_format": "mp4",
-        "postprocessors": [{
-            "key": "FFmpegVideoConvertor",
-            "preferedformat": "mp4"
-        }],
-        "postprocessor_args": [
-            "-c:v", "copy",
-            "-c:a", "aac",
-            "-b:a", "192k"
-        ],
+        #"postprocessors": [{
+        #    "key": "FFmpegVideoConvertor",
+        #    "preferedformat": "mp4"
+        #}],
+        #"postprocessor_args": [
+        #    "-c:v", "copy",
+        #    "-c:a", "aac",
+        #    "-b:a", "192k"
+        #],
         "outtmpl": str(VIDEO_DIR / "%(title)s.%(ext)s"),
         "noplaylist": True,
         "quiet": False,
+        "progress_hooks": [progress_hook],
+        #"js_runtimes": {
+        #    "node": {}
+        #},
+        #"remote_components": ["ejs:github"],
+        #"extractor_args": {
+        #    "youtube": {
+        #        "player_client": ["web"]
+        #    }
+        #},
+        #"allow_unplayable_formats": True,
     }
 
 
