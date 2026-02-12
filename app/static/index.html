@@ -2,210 +2,38 @@
 <html>
 <head>
   <title>YTLink AV Downloader</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h2>YouTube Downloader</h2>
 
-  <input id="url" placeholder="Paste YouTube link" size="60" />
-  <br><br>
+  <div class="app">
+    <h1>YTLink AV Downloader</h1>
 
-  <button onclick="downloadAudio()">Download Audio</button>
-  <button onclick="downloadVideo()">Download Video</button>
+    <input id="url" placeholder="Paste YouTube link here..." />
 
-<div style="margin-top:20px; width:500px;">
-  <div style="width:100%;height:25px;border:1px solid #000;border-radius:4px;">
-    <div id="bar"
-         style="height:100%;width:0%;
-                background:linear-gradient(90deg,#4caf50,#2e7d32);
-                transition: width 0.3s;">
+    <div class="button-group">
+      <button onclick="downloadAudio()">Download Audio</button>
+      <button onclick="downloadVideo()">Download Video</button>
     </div>
+
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div id="bar"></div>
+      </div>
+
+      <div class="progress-info">
+        <span id="percentText">0%</span>
+        <span id="speedText">Speed: --</span>
+        <span id="etaText">ETA: --</span>
+      </div>
+    </div>
+
+    <button class="secondary" onclick="openDownloads()">
+      Open Downloads Folder
+    </button>
+
   </div>
 
-  <div style="margin-top:8px;font-family:monospace;">
-    <span id="percentText">0%</span> |
-    <span id="speedText">Speed: --</span> |
-    <span id="etaText">ETA: --</span>
-  </div>
-</div>
-
-<br><br>
-<button onclick="openDownloads()">
-  Open Downloads Folder
-</button>
-
-
-
-
-  <pre id="result"></pre>
-
-  <script>
-  async function downloadAudio() {
-  const url = document.getElementById("url").value;
-
-  if (!url) {
-    alert("Please enter a YouTube URL");
-    return;
-  }
-
-  const bar = document.getElementById("bar");
-  const percentText = document.getElementById("percentText");
-  const speedText = document.getElementById("speedText");
-  const etaText = document.getElementById("etaText");
-
-  // Reset UI
-  bar.style.width = "0%";
-  bar.style.background = "linear-gradient(90deg,#4caf50,#2e7d32)";
-  percentText.innerText = "0%";
-  speedText.innerText = "Speed: --";
-  etaText.innerText = "ETA: --";
-
-  try {
-    const res = await fetch("/download/audio", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ url })
-    });
-
-    const data = await res.json();
-
-    if (!data.task_id) {
-      alert("Failed to start download.");
-      return;
-    }
-
-    pollStatus(data.task_id);
-
-  } catch (error) {
-    alert("Error starting download.");
-  }
-}
-
-async function pollStatus(taskId) {
-  const bar = document.getElementById("bar");
-  const percentText = document.getElementById("percentText");
-  const speedText = document.getElementById("speedText");
-  const etaText = document.getElementById("etaText");
-
-  const interval = setInterval(async () => {
-    try {
-      const res = await fetch(`/status/${taskId}`);
-      const data = await res.json();
-
-      if (!data || data.status === "not_found") {
-        clearInterval(interval);
-        return;
-      }
-
-      const progress = data.progress || 0;
-
-      bar.style.width = progress + "%";
-      percentText.innerText = progress.toFixed(1) + "%";
-
-      if (data.speed !== null && data.speed !== undefined)
-        speedText.innerText = "Speed: " + data.speed + " MB/s";
-
-      if (data.eta !== null && data.eta !== undefined)
-        etaText.innerText = "ETA: " + data.eta + "s";
-
-      if (data.status === "completed") {
-        bar.style.background = "#1976d2";
-        percentText.innerText = "Completed ✔";
-        speedText.innerText = "";
-        etaText.innerText = "";
-        clearInterval(interval);
-      }
-
-    } catch (error) {
-      clearInterval(interval);
-    }
-
-  }, 1000);
-}
-</script>
-<script>
-async function downloadAudio() {
-  const url = document.getElementById("url").value;
-
-  if (!url) {
-    alert("Please enter a YouTube URL");
-    return;
-  }
-
-  resetUI();
-
-  try {
-    const res = await fetch("/download/audio", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ url })
-    });
-
-    const data = await res.json();
-
-    if (!data.task_id) {
-      alert("Failed to start download.");
-      return;
-    }
-
-    pollStatus(data.task_id);
-
-  } catch (error) {
-    alert("Error starting download.");
-  }
-}
-
-async function downloadVideo() {
-  const url = document.getElementById("url").value;
-
-  if (!url) {
-    alert("Please enter a YouTube URL");
-    return;
-  }
-
-  resetUI();
-
-  try {
-    const res = await fetch("/download/video", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ url })
-    });
-
-    const data = await res.json();
-
-    if (!data.task_id) {
-      alert("Failed to start video download.");
-      return;
-    }
-
-    pollStatus(data.task_id);
-
-  } catch (error) {
-    alert("Error starting video download.");
-  }
-}
-
-function resetUI() {
-  const bar = document.getElementById("bar");
-  const percentText = document.getElementById("percentText");
-  const speedText = document.getElementById("speedText");
-  const etaText = document.getElementById("etaText");
-
-  bar.style.width = "0%";
-  bar.style.background = "linear-gradient(90deg,#4caf50,#2e7d32)";
-  percentText.innerText = "0%";
-  speedText.innerText = "Speed: --";
-  etaText.innerText = "ETA: --";
-}
-</script>
-<script>
-async function openDownloads() {
-  try {
-    await fetch("/downloads");
-  } catch (error) {
-    alert("Failed to open folder");
-  }
-}
-</script>
+  <script src="js/main.js"></script>
 </body>
 </html>

@@ -33,8 +33,8 @@ def open_downloads():
                 ["explorer", str(DOWNLOAD_DIR)],
                 shell=True
             )
-        else:
-            subprocess.Popen(["xdg-open", str(DOWNLOAD_DIR)])
+        #else:
+        #    subprocess.Popen(["xdg-open", str(DOWNLOAD_DIR)])
 
         return {"status": "success"}
     except Exception as e:
