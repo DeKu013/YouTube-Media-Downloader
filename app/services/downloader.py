@@ -1,11 +1,14 @@
 from pathlib import Path
+import os
 import yt_dlp
 import uuid
 from app.services.progress import create_task, update_task, complete_task
 
+#APP_NAME = "YTLinkDownloads"
+
 # Base download directory (safe location)
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DOWNLOADS_DIR = BASE_DIR / "downloads"
+BASE_DIR = Path.home() / "Documents"
+DOWNLOADS_DIR = BASE_DIR / "YTLinkDownloads"
 AUDIO_DIR = DOWNLOADS_DIR / "audio"
 VIDEO_DIR = DOWNLOADS_DIR / "video"
 

@@ -4,12 +4,12 @@ import subprocess
 from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks
 from app.models.schemas import DownloadRequest
-from app.services.downloader import download_audio, download_video
+from app.services.downloader import download_audio, download_video, BASE_DIR, DOWNLOADS_DIR
 from app.services.progress import create_task, get_task
 
 router = APIRouter()
 
-DOWNLOAD_DIR = Path("downloads").resolve()
+#DOWNLOAD_DIR = Path("downloads").resolve()
 
 @router.post("/download/audio")
 def download_audio_route(req: DownloadRequest, bg: BackgroundTasks):
@@ -30,7 +30,7 @@ def open_downloads():
     try:
         if os.name == "nt":
             subprocess.run(
-                ["explorer", str(DOWNLOAD_DIR)],
+                ["explorer", str(DOWNLOADS_DIR)],
                 shell=True
             )
         #else:
