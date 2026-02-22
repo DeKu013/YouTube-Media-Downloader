@@ -16,14 +16,11 @@ def start_backend():
 
 
 if __name__ == "__main__":
-    # Start backend in background thread
     backend_thread = threading.Thread(target=start_backend, daemon=True)
     backend_thread.start()
 
-    # Wait for server to boot
     time.sleep(2)
 
-    # Create native desktop window
     webview.create_window(
         "YTLink AV Downloader",
         "http://127.0.0.1:8000/ui",

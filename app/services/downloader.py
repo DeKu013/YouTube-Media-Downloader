@@ -6,13 +6,11 @@ from app.services.progress import create_task, update_task, complete_task
 
 #APP_NAME = "YTLinkDownloads"
 
-# Base download directory (safe location)
 BASE_DIR = Path.home() / "Documents"
 DOWNLOADS_DIR = BASE_DIR / "YTLinkDownloads"
 AUDIO_DIR = DOWNLOADS_DIR / "audio"
 VIDEO_DIR = DOWNLOADS_DIR / "video"
 
-# Ensure folders exist
 AUDIO_DIR.mkdir(parents=True, exist_ok=True)
 VIDEO_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -26,7 +24,7 @@ def download_audio(url: str, quality: str = "192", task_id: str = None):
             eta = d.get('eta')
             if total and downloaded:
                 percent = (downloaded / total) * 100
-                percent = min(round(percent, 2), 99.9)  # Cap at 99.9% until finished
+                percent = min(round(percent, 2), 99.9)
                 update_task(
                     task_id,
                     percent,
@@ -72,7 +70,7 @@ def download_video(task_id: str, url: str, resolution: str = "best"):
             eta = d.get('eta')
             if total and downloaded:
                 percent = (downloaded / total) * 100
-                percent = min(round(percent, 2), 99.9)  # Cap at 99.9% until finished
+                percent = min(round(percent, 2), 99.9)
                 update_task(
                     task_id,
                     percent,

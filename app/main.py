@@ -6,11 +6,8 @@ from app.api.routes import router
 
 app = FastAPI(title="YTLink AV Downloader")
 
-# API
 app.include_router(router)
 
-# UI
-# UI (PyInstaller safe path handling)
 if getattr(sys, "frozen", False):
     BASE_DIR = sys._MEIPASS
 else:
