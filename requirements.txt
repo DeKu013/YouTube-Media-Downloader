@@ -1,5 +1,3 @@
-To run this application via the web client, you might need these installed:
-
 fastapi
 uvicorn[standard]
 yt-dlp
